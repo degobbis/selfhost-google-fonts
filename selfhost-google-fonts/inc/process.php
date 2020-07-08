@@ -3,11 +3,11 @@ namespace Sphere\SGF;
 
 /**
  * Process, download and generate CSS for a Google Fonts
- * 
+ *
  * The base where all the magic begins. Processes enqueues, css files, and inline
  * CSS to find remote Google Fonts, download them and replace them with locally
  * hosted ones - depending on options.
- * 
+ *
  * @author  asadkn
  * @since   1.0.0
  * @package Sphere\SGF
@@ -60,11 +60,11 @@ class Process
 
 				/**
 				 * Scan HTML for enqueues - wp_ob_end_flush_all() will take care of flushing it
-				 * 
+				 *
 				 * Note: Autoptimize starts at priority 2 so we use 3 to process BEFORE AO.
 				 */
-				add_action('template_redirect', function() {	
-					
+				add_action('template_redirect', function() {
+
 					ob_start(array($this, 'process_markup'));
 
 				}, 3);
@@ -86,7 +86,7 @@ class Process
 
 	/**
 	 * Process standard WordPress enqueues
-	 * 
+	 *
 	 * @param string $url
 	 * @return string
 	 */
@@ -103,7 +103,7 @@ class Process
 
 	/**
 	 * Process Markup as as needed
-	 * 
+	 *
 	 * @param  string $html
 	 * @return string
 	 */
@@ -115,24 +115,24 @@ class Process
 		if (SGF_IS_PRO && Plugin::options()->process_wf_loader) {
 			$html = Plugin::process_js()->process_markup($html);
 		}
-		
+
 		return $html;
 	}
 
 	/**
 	 * Get a processed CSS file from the cache or use a generator function
 	 * to process and cache a CSS file.
-	 * 
+	 *
 	 * Use output argument to return CSS content instead of a URL.
-	 * 
+	 *
 	 * @see  get_transient()
 	 * @uses self::generate_css()
 	 * @uses self::parse_fonts_url()
-	 * 
+	 *
 	 * @param string   $url        A CSS file URL, can be a local or an gfonts URL
 	 * @param callable $generator  Callback to run if cache isn't found
 	 * @param string   $output     Return 'url' or CSS content?
-	 * 
+	 *
 	 * @return string  URL or Google Fonts CSS with @font-face rules
 	 */
 	public function get_processed($url, $generator = null, $output = 'url')
@@ -169,7 +169,7 @@ class Process
 
 			return $url;
 		}
-		
+
 		if ($output == 'css') {
 			return Plugin::file_system()->get_contents(
 				$this->get_upload_path($file)
@@ -179,7 +179,7 @@ class Process
 
 	/**
 	 * Add a url to file name to cache
-	 * 
+	 *
 	 * @param string $id     A URL or other unique id
 	 * @param string $value  File or other value to store
 	 */
@@ -193,7 +193,7 @@ class Process
 
 	/**
 	 * Get cache for a URL or return all cache
-	 * 
+	 *
 	 * @param string $id  A URL or other unique id
 	 */
 	public function get_cache($id = null)
@@ -214,8 +214,8 @@ class Process
 
 	/**
 	 * Process and generate Google Fonts' CSS by URL
-	 * 
-	 * @return string Local css file name 
+	 *
+	 * @return string Local css file name
 	 */
 	public function process_fonts_url($url)
 	{
@@ -229,7 +229,7 @@ class Process
 
 		// Create CSS file
 		$file = $this->create_css_file(
-			implode("\n", $css), 
+			implode("\n", $css),
 			'font-' . md5($url)
 		);
 
@@ -238,7 +238,7 @@ class Process
 
 	/**
 	 * Generate CSS provided a list of fonts and subsets
-	 * 
+	 *
 	 * Example:
 	 * <code>
 	 * 	generate_css(
@@ -249,10 +249,10 @@ class Process
 	 *      ['latin', 'latin-ext']
 	 *  );
 	 * </code>
-	 * 
+	 *
 	 * @param array $families
 	 * @param array $subsets
-	 * 
+	 *
 	 * @return array Array of CSS strings to join and use
 	 */
 	public function generate_css($families, $subsets)
@@ -265,7 +265,7 @@ class Process
 		$json = $this->get_fonts_json();
 
 		foreach ($families as $font) {
-			
+
 			$font_obj = new GoogleFont($font['name'], $json[$font['name']]);
 
 			// Generate the CSS for this family
@@ -280,7 +280,7 @@ class Process
 
 	/**
 	 * Parse a standard Google Fonts /css URL
-	 * 
+	 *
 	 * @see self::parse_fonts_query()
 	 * @return array
 	 */
@@ -310,12 +310,12 @@ class Process
 	/**
 	 * Parses a Google Fonts query string and returns an array
 	 * of families and subsets used.
-	 * 
-	 * NOTE: Data must NOT be urlencoded. 
-	 * 
+	 *
+	 * NOTE: Data must NOT be urlencoded.
+	 *
 	 * @param string|array $query  Query string or parsed query string
-	 * 
-	 * @return array 
+	 *
+	 * @return array
 	 */
 	public function parse_fonts_query($query)
 	{
@@ -386,7 +386,7 @@ class Process
 
 	/**
 	 * Create CSS file and return the local URL
-	 * 
+	 *
 	 * @param string|array  $css
 	 * @param string|null   $name
 	 */
@@ -399,11 +399,11 @@ class Process
 		if (!$name) {
 			$name = md5(time() . rand(1, 100000));
 		}
-		
+
 		$name .= '.css';
 
 		$file  = $this->get_upload_path() . sanitize_file_name($name);
-		Plugin::file_system()->put_contents($file, $css, FS_CHMOD_FILE);		
+		Plugin::file_system()->put_contents($file, $css, FS_CHMOD_FILE);
 
 		return $name;
 	}
@@ -430,11 +430,11 @@ class Process
 
 	/**
 	 * Get all the font file URLs to preload
-	 * 
+	 *
 	 * @see  get_transient()
 	 * @see  set_transient()
 	 * @uses self::get_fonts_json()
-	 * 
+	 *
 	 * @return array  URLs of font files
 	 */
 	public function get_preload_fonts()
@@ -471,7 +471,7 @@ class Process
 				$files[] = $cache;
 			}
 		}
-		
+
 		set_transient(self::PRELOAD_CACHE, $files);
 		return $files;
 	}
@@ -505,7 +505,24 @@ class Process
 	 */
 	public function get_upload_path($file = '')
 	{
-		$upload = wp_upload_dir(null, false);
+		$dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
+		$url = trailingslashit(WP_CONTENT_URL) . 'uploads';
+
+		if (defined(UPLOADS))
+		{
+			$dir = trailingslashit(WP_CONTENT_DIR) . UPLOADS;
+			$url = trailingslashit(WP_CONTENT_URL) . UPLOADS;
+		}
+
+		$upload = array(
+			'path'    => $dir,
+			'url'     => $url,
+			'subdir'  => '/',
+			'basedir' => $dir,
+			'baseurl' => $url,
+			'error'   => false,
+		);
+
 		$path   = trailingslashit($upload['basedir']) . 'sgf-css/';
 
 		if (!file_exists($path)) {
@@ -525,7 +542,24 @@ class Process
 	 */
 	public function get_upload_url($file = '')
 	{
-		$upload = wp_upload_dir(null, false);
+		$dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
+		$url = trailingslashit(WP_CONTENT_URL) . 'uploads';
+
+		if (defined(UPLOADS))
+		{
+			$dir = trailingslashit(WP_CONTENT_DIR) . UPLOADS;
+			$url = trailingslashit(WP_CONTENT_URL) . UPLOADS;
+		}
+
+		$upload = array(
+			'path'    => $dir,
+			'url'     => $url,
+			'subdir'  => '/',
+			'basedir' => $dir,
+			'baseurl' => $url,
+			'error'   => false,
+		);
+
 		$url    = trailingslashit($upload['baseurl']) . 'sgf-css/';
 
 		// Protocol relative URLs?
@@ -539,7 +573,7 @@ class Process
 
 		return $url;
 	}
-	
+
 	/**
 	 * Load and return the Google Fonts data
 	 */

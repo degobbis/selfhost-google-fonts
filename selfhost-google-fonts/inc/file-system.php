@@ -4,7 +4,7 @@ namespace Sphere\SGF;
 
 /**
  * Filesystem that mainly wraps the WP_File_System
- * 
+ *
  * @author  asadkn
  * @since   1.0.0
  * @package Sphere\SGF
@@ -26,7 +26,7 @@ class FileSystem {
 		if (empty($wp_filesystem)) {
 
 			require_once wp_normalize_path(ABSPATH . '/wp-admin/includes/file.php');
-			
+
 			// At shutdown is usually a ob_start callback which doesn't permit calling ob_*
 			if (did_action('shutdown') && ob_get_level() > 0) {
 				$creds = request_filesystem_credentials('');
@@ -34,7 +34,7 @@ class FileSystem {
 			else {
 				ob_start();
 				$creds = request_filesystem_credentials('');
-				ob_end_clean();				
+				ob_end_clean();
 			}
 
 			if (!$creds) {
@@ -42,11 +42,27 @@ class FileSystem {
 			}
 
 			$filesystem = WP_Filesystem($creds);
-			
+
 			if (!$filesystem) {
-				
 				// Fallback to lax permissions
-				$upload = wp_upload_dir();
+				$dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
+				$url = trailingslashit(WP_CONTENT_URL) . 'uploads';
+
+				if (defined(UPLOADS))
+				{
+					$dir = trailingslashit(WP_CONTENT_DIR) . UPLOADS;
+					$url = trailingslashit(WP_CONTENT_URL) . UPLOADS;
+				}
+
+				$upload = array(
+					'path'    => $dir,
+					'url'     => $url,
+					'subdir'  => '',
+					'basedir' => $dir,
+					'baseurl' => $url,
+					'error'   => false,
+				);
+
 				WP_Filesystem(false, $upload['basedir'], true);
 			}
 		}
