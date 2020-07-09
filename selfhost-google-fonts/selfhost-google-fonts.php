@@ -4,14 +4,14 @@
  *
  * @package           Sphere\SGF
  *
- * Plugin Name:       Self-Hosted Google Fonts
- * Description:       Automatically self-host your Google Fonts - works with any theme or plugin. Forked by Guido De Gobbis
- * Version:           1.0.1-1
- * Author:            asadkn
- * Author URI:        https://profiles.wordpress.org/asadkn/
+ * Plugin Name:       Self-Hosted Google Fonts - Forked by Guido De Gobbis
+ * Description:       Automatically self-host your Google Fonts - works with any theme or plugin.
+ * Version:           2.0.1
+ * Author:            Guido De Gobbis
+ * Author URI:        https://github.com/degobbis/selfhost-google-fonts/releases
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       sphere-sgf
+ * Text Domain:       selfhost-google-fonts
  * Domain Path:       /languages
  * Requires PHP:      5.4
  */
@@ -26,14 +26,14 @@ define('SGF_IS_PRO', false);
 $dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
 $url = trailingslashit(WP_CONTENT_URL) . 'uploads';
 
-if (defined(UPLOADS))
+if (defined('UPLOADS'))
 {
 	$dir = trailingslashit(ABSPATH) . UPLOADS;
 	$url = trailingslashit(get_option( 'siteurl' )) . UPLOADS;
 }
 
-define('SGF_FONTS_UPLOAD_DIR', dir);
-define('SGF_FONTS_UPLOAD_URL', url);
+define('SGF_FONTS_UPLOAD_DIR', $dir);
+define('SGF_FONTS_UPLOAD_URL', $url);
 
 /**
  * Register activation and deactivation hooks

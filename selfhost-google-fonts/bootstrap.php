@@ -44,6 +44,11 @@ if (class_exists('\Sphere\SGF\Plugin', false)) {
 }
 
 /**
+ * Include update logic
+ */
+include plugin_dir_path(__FILE__) . 'inc/update.php';
+
+/**
  * Launch the plugin
  */
 require_once plugin_dir_path(__FILE__) . 'inc/plugin.php';

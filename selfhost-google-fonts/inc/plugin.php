@@ -4,25 +4,25 @@ namespace Sphere\SGF;
 
 /**
  * The Plugin Bootstrap and Setup
- * 
+ *
  * Dual acts as a container and a facade.
- * 
+ *
  * @author  asadkn
  * @since   1.0.0
  * @package Sphere\SGF
- * 
+ *
  * @method static \WP_Filesystem_Base  file_system()  Via \Sphere\SGF\Filesystem
  * @method static Process    process()
  * @method static ProcessCss process_css()
  * @method static ProcessJs  process_js()
  * @method static Options    options()
  */
-class Plugin 
+class Plugin
 {
 	/**
 	 * Plugin version
 	 */
-	const VERSION = '1.0.1';
+	const VERSION = '2.0.1';
 
 	public static $instance;
 
@@ -38,7 +38,7 @@ class Plugin
 	/**
 	 * Set it hooks on init
 	 */
-	public function init() 
+	public function init()
 	{
 		$this->dir_path = plugin_dir_path($this->plugin_file);
 		$this->dir_url  = plugin_dir_url($this->plugin_file);
@@ -52,7 +52,7 @@ class Plugin
 		 */
 
 		$this->container['process'] = new Process;
-		
+
 		// File system with lazy init singleton
 		$this->container['file_system'] = $this->shared('\Sphere\SGF\FileSystem');
 
@@ -66,18 +66,18 @@ class Plugin
 		$this->container['options'] = $this->shared('\Sphere\SGF\Options', array('sgf_options'));
 
 		if (SGF_IS_PRO) {
-			
+
 			// Verification object
 			$this->container['verify'] = new Verify;
 			self::verify()->init();
 		}
-		
+
 		/**
 		 * Admin only requires
-		 * 
+		 *
 		 * We load these only on Admin side to keep things lean and performant.
-		 * 
-		 * Note on CMB2: 
+		 *
+		 * Note on CMB2:
 		 *  It's used ONLY as an admin side dependency and never even
 		 *  loaded on the frontend. Use native WP options API on front.
 		 */
@@ -110,11 +110,11 @@ class Plugin
 
 	/**
 	 * Creates a single instance class for container
-	 * 
+	 *
 	 * @param string     $class  Fully-qualifed class name
 	 * @param array|null $args   Bound args to pass to constructor
 	 */
-	public function shared($class, $args = null) 
+	public function shared($class, $args = null)
 	{
 		return function($fresh = false) use ($class, $args) {
 			static $object;
@@ -165,9 +165,9 @@ class Plugin
 	}
 
 	/**
-	 * Gets an object from container 
+	 * Gets an object from container
 	 */
-	public function get($name, $args = array()) 
+	public function get($name, $args = array())
 	{
 		$object = $this->container[$name];
 
