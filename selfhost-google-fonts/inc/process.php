@@ -505,21 +505,12 @@ class Process
 	 */
 	public function get_upload_path($file = '')
 	{
-		$dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
-		$url = trailingslashit(WP_CONTENT_URL) . 'uploads';
-
-		if (defined(UPLOADS))
-		{
-			$dir = trailingslashit(WP_CONTENT_DIR) . UPLOADS;
-			$url = trailingslashit(WP_CONTENT_URL) . UPLOADS;
-		}
-
 		$upload = array(
-			'path'    => $dir,
-			'url'     => $url,
-			'subdir'  => '/',
-			'basedir' => $dir,
-			'baseurl' => $url,
+			'path'    => SGF_FONTS_UPLOAD_DIR,
+			'url'     => SGF_FONTS_UPLOAD_URL,
+			'subdir'  => '',
+			'basedir' => SGF_FONTS_UPLOAD_DIR,
+			'baseurl' => SGF_FONTS_UPLOAD_URL,
 			'error'   => false,
 		);
 
@@ -542,21 +533,12 @@ class Process
 	 */
 	public function get_upload_url($file = '')
 	{
-		$dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
-		$url = trailingslashit(WP_CONTENT_URL) . 'uploads';
-
-		if (defined(UPLOADS))
-		{
-			$dir = trailingslashit(WP_CONTENT_DIR) . UPLOADS;
-			$url = trailingslashit(WP_CONTENT_URL) . UPLOADS;
-		}
-
 		$upload = array(
-			'path'    => $dir,
-			'url'     => $url,
-			'subdir'  => '/',
-			'basedir' => $dir,
-			'baseurl' => $url,
+			'path'    => SGF_FONTS_UPLOAD_DIR,
+			'url'     => SGF_FONTS_UPLOAD_URL,
+			'subdir'  => '',
+			'basedir' => SGF_FONTS_UPLOAD_DIR,
+			'baseurl' => SGF_FONTS_UPLOAD_URL,
 			'error'   => false,
 		);
 

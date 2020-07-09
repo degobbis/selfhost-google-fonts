@@ -44,22 +44,12 @@ class FileSystem {
 			$filesystem = WP_Filesystem($creds);
 
 			if (!$filesystem) {
-				// Fallback to lax permissions
-				$dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
-				$url = trailingslashit(WP_CONTENT_URL) . 'uploads';
-
-				if (defined(UPLOADS))
-				{
-					$dir = trailingslashit(WP_CONTENT_DIR) . UPLOADS;
-					$url = trailingslashit(WP_CONTENT_URL) . UPLOADS;
-				}
-
 				$upload = array(
-					'path'    => $dir,
-					'url'     => $url,
+					'path'    => SGF_FONTS_UPLOAD_DIR,
+					'url'     => SGF_FONTS_UPLOAD_URL,
 					'subdir'  => '',
-					'basedir' => $dir,
-					'baseurl' => $url,
+					'basedir' => SGF_FONTS_UPLOAD_DIR,
+					'baseurl' => SGF_FONTS_UPLOAD_URL,
 					'error'   => false,
 				);
 
