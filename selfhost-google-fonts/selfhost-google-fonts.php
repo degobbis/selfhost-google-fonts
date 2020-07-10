@@ -46,54 +46,104 @@ if ( !defined('SGF_UPLOAD') )
 	define('SGF_UPLOAD', $sgf_upload);
 }
 
+require_once plugin_dir_path(__FILE__) . 'bootstrap.php';
+
 /**
  * Register activation and deactivation hooks
  */
 global $sgf_is_done;
-$sgf_is_done = array();
+$sgf_is_done = false;
 
-register_activation_hook(__FILE__, function () {
-	global $sgf_is_done;
-
-	$sgf_options = unserialize('a:5:{s:7:"enabled";s:1:"1";s:16:"process_enqueues";s:2:"on";s:17:"process_css_files";s:2:"on";s:18:"process_css_inline";s:2:"on";s:17:"protocol_relative";s:2:"on";}');
-
-	if (is_multisite())
+if (!function_exists('sgf_activation_hook'))
+{
+	function sgf_activation_hook()
 	{
-		if (empty($sgf_is_done))
+		global $sgf_is_done;
+
+		$sgf_options = unserialize('a:5:{s:7:"enabled";s:1:"1";s:16:"process_enqueues";s:2:"on";s:17:"process_css_files";s:2:"on";s:18:"process_css_inline";s:2:"on";s:17:"protocol_relative";s:2:"on";}');
+
+		if (is_multisite())
 		{
-			$sgf_is_done = true;
-			activate_plugins(plugin_basename(__FILE__), '', true);
-		}
-
-		$blogIds = get_sites(array('fields' => 'ids'));
-
-		foreach ($blogIds as $blogId)
-		{
-			switch_to_blog($blogId);
-
-			if (!get_option('sgf_options'))
+			if (empty($sgf_is_done))
 			{
-				update_option('sgf_options', $sgf_options);
+				$sgf_is_done = true;
+				activate_plugins(plugin_basename(__FILE__), '', true);
 			}
 
-			restore_current_blog();
+			$blogIds = get_sites(array('fields' => 'ids'));
+
+			foreach ($blogIds as $blogId)
+			{
+				switch_to_blog($blogId);
+
+				if (!get_option('sgf_options'))
+				{
+					update_option('sgf_options', $sgf_options);
+				}
+
+				restore_current_blog();
+			}
+
+			return;
 		}
 
+		if (get_option('sgf_options'))
+		{
+			return;
+		}
+
+		update_option('sgf_options', $sgf_options);
+
 		return;
 	}
-
-	if (get_option('sgf_options'))
-	{
-		return;
-	}
-
-	update_option('sgf_options', $sgf_options);
-
-	return;
-});
+}
+register_activation_hook(__FILE__, 'sgf_activation_hook');
 
 register_deactivation_hook(__FILE__, function () {
 	return;
 });
 
-require_once plugin_dir_path(__FILE__) . 'bootstrap.php';
+/**
+ * Register uninstall hooks.
+ */
+if (!function_exists('sgf_uninstall'))
+{
+	function sgf_uninstall()
+	{
+		global $wp_filesystem;
+
+		if ($wp_filesystem->is_dir(SGF_UPLOAD['basedir'] . '/sgf-css/'))
+		{
+			$wp_filesystem->rmdir(SGF_UPLOAD['basedir'] . '/sgf-css/', true);
+		}
+
+		if (is_multisite())
+		{
+			$blogIds = get_sites(array('fields' => 'ids'));
+
+			delete_site_transient('sgf_update');
+
+			foreach ($blogIds as $blogId)
+			{
+				switch_to_blog($blogId);
+
+				delete_option('sgf_options');
+				delete_transient('sgf_processed_cache');
+				delete_transient('sgf_preload_cache');
+
+				restore_current_blog();
+			}
+
+			return;
+		}
+
+		delete_option('sgf_options');
+		delete_transient('sgf_processed_cache');
+		delete_transient('sgf_preload_cache');
+		delete_transient('sgf_update');
+
+		return;
+	}
+}
+
+register_uninstall_hook(__FILE__, 'sgf_uninstall');
