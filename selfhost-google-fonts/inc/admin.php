@@ -108,8 +108,16 @@ class Admin
 
 	public function _empty_cache()
 	{
+		global $wp_filesystem;
+
 		delete_transient(Process::PROCESSED_CACHE);
 		delete_transient(Process::PRELOAD_CACHE);
+
+		// Clear et inline style cache, if exists
+		if ($wp_filesystem->is_dir(WP_CONTENT_DIR . '/et-cache/'))
+		{
+			$wp_filesystem->rmdir(WP_CONTENT_DIR . '/et-cache/', true);
+		}
 	}
 
 	/**
