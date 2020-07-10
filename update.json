@@ -3,11 +3,11 @@
   "author": "Guido De Gobbis",
   "author_link": "https:\/\/github.com\/degobbis\/selfhost-google-fonts\/releases",
   "version": "2.0.1",
-  "download_url": "https:\/\/github.com\/degobbis\/selfhost-google-fonts\/releases\/download\/1.0.1-1\/selfhost-google-fonts-1.0.1-1.zip",
+  "download_url": "https:\/\/github.com\/degobbis\/selfhost-google-fonts\/releases\/download\/2.0.1\/selfhost-google-fonts.zip",
   "requires": "5.3",
   "tested": "5.5",
   "requires_php": "5.4",
-  "last_updated": "2020-07-09 00:00:00",
+  "last_updated": "2020-07-10 00:00:00",
   "sections": {
 	"description": "",
 	"installation": "",
