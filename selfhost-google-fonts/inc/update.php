@@ -39,8 +39,15 @@ function sgf_plugin_info($res, $action, $args)
 		return false;
 	}
 
+	$remote = get_transient('sgf_update');
+
+	if ( is_multisite() )
+	{
+		$remote = get_site_transient('sgf_update');
+	}
+
 	// trying to get from cache first
-	if (false == $remote = get_transient('sgf_update'))
+	if (false === $remote)
 	{
 		// info.json is the file with the actual plugin information on your server
 		$remote = wp_remote_get('https://raw.githubusercontent.com/degobbis/selfhost-google-fonts/gdg-version/update.json', array(
@@ -53,7 +60,14 @@ function sgf_plugin_info($res, $action, $args)
 
 		if (!is_wp_error($remote) && isset($remote['response']['code']) && $remote['response']['code'] == 200 && !empty($remote['body']))
 		{
-			set_transient('sgf_update', $remote, 3600); // 43200 = 12 hours cache
+ 			if ( is_multisite() )
+			{
+				set_site_transient('sgf_update', $remote, 3600); // 43200 = 12 hours cache
+			}
+ 			else
+		    {
+			    set_transient('sgf_update', $remote, 3600); // 43200 = 12 hours cache
+		    }
 		}
 	}
 
@@ -115,8 +129,15 @@ function sgf_push_update($transient)
 		}
 	}
 
+	$remote = get_transient('sgf_update');
+
+	if ( is_multisite())
+	{
+		$remote = get_site_transient('sgf_update');
+	}
+
 	// trying to get from cache first, to disable cache comment 10,20,21,22,24
-	if (false == $remote = get_transient('sgf_update'))
+	if (false === $remote)
 	{
 		// info.json is the file with the actual plugin information on your server
 		$remote = wp_remote_get('https://raw.githubusercontent.com/degobbis/selfhost-google-fonts/gdg-version/update.json', array(
@@ -129,7 +150,14 @@ function sgf_push_update($transient)
 
 		if (!is_wp_error($remote) && isset($remote['response']['code']) && $remote['response']['code'] == 200 && !empty($remote['body']))
 		{
-			set_transient('sgf_update', $remote, 3600); // 43200 = 12 hours cache
+			if ( is_multisite() )
+			{
+				set_site_transient('sgf_update', $remote, 3600); // 43200 = 12 hours cache
+			}
+			else
+			{
+				set_transient('sgf_update', $remote, 3600); // 43200 = 12 hours cache
+			}
 		}
 	}
 
@@ -161,6 +189,13 @@ function sgf_after_update($upgrader_object, $options, $var3 = null, $var4 = null
 	if ($options['action'] == 'update' && $options['type'] === 'plugin')
 	{
 		// just clean the cache when new plugin version is installed
+		if ( is_multisite() )
+		{
+			delete_site_transient('sgf_update');
+
+			return;
+		}
+
 		delete_transient('sgf_update');
 	}
 }
