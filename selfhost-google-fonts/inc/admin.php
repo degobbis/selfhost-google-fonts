@@ -141,18 +141,18 @@ class Admin
 
 			switch_to_blog($activeBlogId);
 
-			$preloadFilesToDelete = array_diff($sgfPreloadFiles, $usedPreloadFiles);
-			$processedFilesToDelete = array_diff($sgfProcessedFiles, $usedProcessedFiles);
+			$sgfPreloadFiles   = array_diff($sgfPreloadFiles, $usedPreloadFiles);
+			$sgfProcessedFiles = array_diff($sgfProcessedFiles, $usedProcessedFiles);
+		}
 
-			if (!empty($preloadFilesToDelete))
-			{
-				$this->deleteFilesFromCache($preloadFilesToDelete);
-			}
+		if (!empty($sgfPreloadFiles))
+		{
+			$this->deleteFilesFromCache($sgfPreloadFiles);
+		}
 
-			if (!empty($processedFilesToDelete))
-			{
-				$this->deleteFilesFromCache($processedFilesToDelete);
-			}
+		if (!empty($sgfProcessedFiles))
+		{
+			$this->deleteFilesFromCache($sgfProcessedFiles);
 		}
 
 		// Clear et inline style cache, if exists
@@ -339,7 +339,7 @@ $instructions .= $this->cache_info();
 			'desc'    => esc_html__('Process properly enqueued Google Fonts. This should be enough for most themes and plugins.', 'sphere-sgf'),
 			'id'      => 'process_enqueues',
 			'type'    => 'checkbox',
-			'default' => 1,
+			'default' => 0,
 			'attributes' => array('data-conditional-id' => 'enabled'),
 		));
 
@@ -348,7 +348,7 @@ $instructions .= $this->cache_info();
 			'desc'    => esc_html__('Scan all local CSS files in HTML. Use if processing enqueus is not enough for your themes and plugins. Has slight performance impact - best used with cache plugins.', 'sphere-sgf'),
 			'id'      => 'process_css_files',
 			'type'    => 'checkbox',
-			'default' => 1,
+			'default' => 0,
 			'attributes' => array('data-conditional-id' => 'enabled'),
 		));
 
@@ -357,7 +357,7 @@ $instructions .= $this->cache_info();
 			'desc'    => esc_html__('Scan all inline CSS. Has slight performance impact - best used with cache plugins.', 'sphere-sgf'),
 			'id'      => 'process_css_inline',
 			'type'    => 'checkbox',
-			'default' => 1,
+			'default' => 0,
 			'attributes' => array('data-conditional-id' => 'enabled'),
 		));
 
@@ -366,7 +366,7 @@ $instructions .= $this->cache_info();
 			'desc'    => esc_html__('Use protocol-relative URLs for generated CSS files. This can fix issues with a partial SSL move such as CloudFlare where the backend is actually on HTTP.', 'sphere-sgf'),
 			'id'      => 'protocol_relative',
 			'type'    => 'checkbox',
-			'default' => 1,
+			'default' => 0,
 			'attributes' => array('data-conditional-id' => 'enabled'),
 		));
 
