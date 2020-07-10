@@ -110,13 +110,114 @@ class Admin
 	{
 		global $wp_filesystem;
 
-		delete_transient(Process::PROCESSED_CACHE);
+		$sgfPreloadFiles   = $this->getFileNames((array) get_transient(Process::PRELOAD_CACHE));
+		$sgfProcessedFiles = $this->getFileNames((array) get_transient(Process::PROCESSED_CACHE));
+
 		delete_transient(Process::PRELOAD_CACHE);
+		delete_transient(Process::PROCESSED_CACHE);
+
+		if (is_multisite())
+		{
+			$activeBlogId       = get_current_blog_id();
+			$blogIds            = get_sites(array('fields' => 'ids'));
+			$usedPreloadFiles   = array();
+			$usedProcessedFiles = array();
+
+			foreach ($blogIds as $blogId)
+			{
+				if ($blogId == $activeBlogId)
+				{
+					continue;
+				}
+
+				switch_to_blog($blogId);
+
+				$neededPreloadFiles = $this->getFileNames((array) get_transient(Process::PRELOAD_CACHE));
+				$usedPreloadFiles   = array_merge($usedPreloadFiles, $neededPreloadFiles);
+
+				$neededProcessedFiles = $this->getFileNames((array) get_transient(Process::PROCESSED_CACHE));
+				$usedProcessedFiles   = array_merge($usedProcessedFiles, $neededProcessedFiles);
+			}
+
+			switch_to_blog($activeBlogId);
+
+			$preloadFilesToDelete = array_diff($sgfPreloadFiles, $usedPreloadFiles);
+			$processedFilesToDelete = array_diff($sgfProcessedFiles, $usedProcessedFiles);
+
+			if (!empty($preloadFilesToDelete))
+			{
+				$this->deleteFilesFromCache($preloadFilesToDelete);
+			}
+
+			if (!empty($processedFilesToDelete))
+			{
+				$this->deleteFilesFromCache($processedFilesToDelete);
+			}
+		}
 
 		// Clear et inline style cache, if exists
 		if ($wp_filesystem->is_dir(WP_CONTENT_DIR . '/et-cache/'))
 		{
 			$wp_filesystem->rmdir(WP_CONTENT_DIR . '/et-cache/', true);
+		}
+	}
+
+	/**
+	 * Get fielnames of cached files
+	 *
+	 * @param   array  $files  Array of files to clear
+	 *
+	 * @return  array
+	 *
+	 * @since   2.0.1
+	 */
+	protected function getFileNames($files)
+	{
+		$files  = array_values($files);
+		$return = array();
+
+		foreach ($files as $file)
+		{
+			if ($file === false)
+			{
+				continue;
+			}
+
+			$array = explode('/', $file);
+			$file  = end($array);
+
+			$return[] = $file;
+		}
+
+		return $return;
+	}
+	/**
+	 * Delete files from cache
+	 *
+	 * @param   array  $files  Array of files to delete
+	 *
+	 * @return  void
+	 *
+	 * @since   2.0.1
+	 */
+	protected function deleteFilesFromCache($files)
+	{
+		global $wp_filesystem;
+
+		foreach ($files as $file)
+		{
+			if ($file === false)
+			{
+				continue;
+			}
+
+			$array = explode('/', $file);
+			$file  = SGF_UPLOAD['basedir'] . '/sgf-css/' . end($array);
+
+			if ($wp_filesystem->is_file($file))
+			{
+				$wp_filesystem->delete($file);
+			}
 		}
 	}
 
