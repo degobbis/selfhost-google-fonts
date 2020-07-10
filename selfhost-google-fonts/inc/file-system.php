@@ -44,16 +44,8 @@ class FileSystem {
 			$filesystem = WP_Filesystem($creds);
 
 			if (!$filesystem) {
-				$upload = array(
-					'path'    => SGF_FONTS_UPLOAD_DIR,
-					'url'     => SGF_FONTS_UPLOAD_URL,
-					'subdir'  => '',
-					'basedir' => SGF_FONTS_UPLOAD_DIR,
-					'baseurl' => SGF_FONTS_UPLOAD_URL,
-					'error'   => false,
-				);
 
-				WP_Filesystem(false, $upload['basedir'], true);
+				WP_Filesystem(false, SGF_UPLOAD['basedir'], true);
 			}
 		}
 

@@ -22,26 +22,29 @@ defined('WPINC') || exit;
 // files are only in pro version. No cheating.
 define('SGF_IS_PRO', false);
 
-// Upload folder and URL
-$dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
-$url = trailingslashit(WP_CONTENT_URL) . 'uploads';
-
-if (defined('UPLOADS'))
+if ( !defined('SGF_UPLOAD') )
 {
-	$dir = trailingslashit(ABSPATH) . UPLOADS;
-	$url = trailingslashit(get_option( 'siteurl' )) . UPLOADS;
+// Upload folder and URL
+	$dir = trailingslashit(WP_CONTENT_DIR) . 'uploads';
+	$url = trailingslashit(WP_CONTENT_URL) . 'uploads';
+
+	if (defined('UPLOADS'))
+	{
+		$dir = trailingslashit(ABSPATH) . UPLOADS;
+		$url = trailingslashit(get_option('siteurl')) . UPLOADS;
+	}
+
+	$sgf_upload = array(
+		'path'    => $dir,
+		'url'     => $url,
+		'subdir'  => '',
+		'basedir' => $dir,
+		'baseurl' => $url,
+		'error'   => false,
+	);
+
+	define('SGF_UPLOAD', $sgf_upload);
 }
-
-$sgf_upload = array(
-	'path'    => $dir,
-	'url'     => $url,
-	'subdir'  => '',
-	'basedir' => $dir,
-	'baseurl' => $url,
-	'error'   => false,
-);
-
-define('SGF_UPLOAD', $sgf_upload);
 
 /**
  * Register activation and deactivation hooks

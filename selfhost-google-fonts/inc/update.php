@@ -50,7 +50,7 @@ function sgf_plugin_info($res, $action, $args)
 	if (false === $remote)
 	{
 		// info.json is the file with the actual plugin information on your server
-		$remote = wp_remote_get('https://raw.githubusercontent.com/degobbis/wp_plg_selfhost-google-fonts/gdg-version/update.json', array(
+		$remote = wp_remote_get('https://raw.githubusercontent.com/degobbis/selfhost-google-fonts/gdg-version/update.json', array(
 				'timeout' => 10,
 				'headers' => array(
 					'Accept' => 'application/json',
@@ -140,7 +140,7 @@ function sgf_push_update($transient)
 	if (false === $remote)
 	{
 		// info.json is the file with the actual plugin information on your server
-		$remote = wp_remote_get('https://raw.githubusercontent.com/degobbis/wp_plg_selfhost-google-fonts/gdg-version/update.json', array(
+		$remote = wp_remote_get('https://raw.githubusercontent.com/degobbis/selfhost-google-fonts/gdg-version/update.json', array(
 				'timeout' => 10,
 				'headers' => array(
 					'Accept' => 'application/json',

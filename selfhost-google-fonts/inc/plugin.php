@@ -36,33 +36,6 @@ class Plugin
 	public $container;
 
 	/**
-	 * @uses self::get()
-	 */
-	public static function __callStatic($name, $args = array())
-	{
-		return self::get_instance()->get($name, $args);
-	}
-
-	/**
-	 * Gets an object from container
-	 */
-	public function get($name, $args = array())
-	{
-		$object = $this->container[$name];
-
-		if (is_callable($object))
-		{
-			return call_user_func_array($object, $args);
-		}
-		else if (is_string($object))
-		{
-			$object = new $object;
-		}
-
-		return $object;
-	}
-
-	/**
 	 * Set it hooks on init
 	 */
 	public function init()
@@ -111,7 +84,6 @@ class Plugin
 		 */
 		if (is_admin())
 		{
-
 			$admin = new Admin;
 			$admin->init();
 
@@ -152,7 +124,6 @@ class Plugin
 
 			if (!$object || $fresh)
 			{
-
 				if (!$args)
 				{
 					$object = new $class;
@@ -166,19 +137,6 @@ class Plugin
 
 			return $object;
 		};
-	}
-
-	/**
-	 * @return \Sphere\SGF\Plugin
-	 */
-	public static function get_instance()
-	{
-		if (self::$instance == null)
-		{
-			self::$instance = new static();
-		}
-
-		return self::$instance;
 	}
 
 	/**
@@ -209,5 +167,45 @@ class Plugin
 			false,
 			$this->dir_path . '/languages/'
 		);
+	}
+
+	/**
+	 * Gets an object from container
+	 */
+	public function get($name, $args = array())
+	{
+		$object = $this->container[$name];
+
+		if (is_callable($object))
+		{
+			return call_user_func_array($object, $args);
+		}
+		else if (is_string($object))
+		{
+			$object = new $object;
+		}
+
+		return $object;
+	}
+
+	/**
+	 * @uses self::get()
+	 */
+	public static function __callStatic($name, $args = array())
+	{
+		return self::get_instance()->get($name, $args);
+	}
+
+	/**
+	 * @return \Sphere\SGF\Plugin
+	 */
+	public static function get_instance()
+	{
+		if (self::$instance == null)
+		{
+			self::$instance = new static();
+		}
+
+		return self::$instance;
 	}
 }
