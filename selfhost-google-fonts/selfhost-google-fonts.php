@@ -32,8 +32,16 @@ if (defined('UPLOADS'))
 	$url = trailingslashit(get_option( 'siteurl' )) . UPLOADS;
 }
 
-define('SGF_FONTS_UPLOAD_DIR', $dir);
-define('SGF_FONTS_UPLOAD_URL', $url);
+$sgf_upload = array(
+	'path'    => $dir,
+	'url'     => $url,
+	'subdir'  => '',
+	'basedir' => $dir,
+	'baseurl' => $url,
+	'error'   => false,
+);
+
+define('SGF_UPLOAD', $sgf_upload);
 
 /**
  * Register activation and deactivation hooks
