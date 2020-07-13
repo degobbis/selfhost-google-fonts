@@ -6,7 +6,7 @@
  *
  * Plugin Name:       Self-Hosted Google Fonts - Forked by Guido De Gobbis
  * Description:       Automatically self-host your Google Fonts - works with any theme or plugin.
- * Version:           2.0.2
+ * Version:           2.0.3
  * Author:            Guido De Gobbis
  * Author URI:        https://github.com/degobbis/selfhost-google-fonts/releases
  * License:           GPL-2.0+
