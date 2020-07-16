@@ -567,6 +567,14 @@ class Process
 	{
 		$url = trailingslashit(SGF_UPLOAD['baseurl']) . 'sgf-css/';
 
+		// Relative path URLs?
+		if (Plugin::options()->relative_path)
+		{
+			$url = parse_url($url, PHP_URL_PATH);
+
+			Plugin::options()->protocol_relative = null;
+		}
+
 		// Protocol relative URLs?
 		if (Plugin::options()->protocol_relative)
 		{
