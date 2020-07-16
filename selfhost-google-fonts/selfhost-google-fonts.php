@@ -60,7 +60,7 @@ if (!function_exists('sgf_activation_hook'))
 	{
 		global $sgf_is_done;
 
-		$sgf_options = unserialize('a:5:{s:7:"enabled";s:1:"1";s:16:"process_enqueues";s:2:"on";s:17:"process_css_files";s:2:"on";s:18:"process_css_inline";s:2:"on";s:17:"protocol_relative";s:2:"on";}');
+		$sgf_options = unserialize('a:5:{s:7:"enabled";s:1:"1";s:16:"process_enqueues";s:2:"on";s:17:"process_css_files";s:2:"on";s:18:"process_css_inline";s:2:"on";s:13:"relative_path";s:2:"on";}');
 
 		if (is_multisite())
 		{
