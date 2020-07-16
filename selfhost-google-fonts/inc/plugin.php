@@ -22,7 +22,7 @@ class Plugin
 	/**
 	 * Plugin version
 	 */
-	const VERSION = '2.0.3';
+	const VERSION = '2.0.4';
 
 	public static $instance;
 
