@@ -362,6 +362,15 @@ $instructions .= $this->cache_info();
 		));
 
 		$options->add_field(array(
+			'name'    => esc_html__('Relative Path URLs', 'sphere-sgf'),
+			'desc'    => __("Use relative-path URLs to load the fonts inside of generated CSS files. This fix the issue on Multisites by loading the fonts from the false host URL.<br /><strong>If selected, 'Protocol Relative URLs' will be ignored!</strong>", 'sphere-sgf'),
+			'id'      => 'relative_path',
+			'type'    => 'checkbox',
+			'default' => 0,
+			'attributes' => array('data-conditional-id' => 'enabled'),
+		));
+
+		$options->add_field(array(
 			'name'    => esc_html__('Protocol Relative URLs', 'sphere-sgf'),
 			'desc'    => esc_html__('Use protocol-relative URLs for generated CSS files. This can fix issues with a partial SSL move such as CloudFlare where the backend is actually on HTTP.', 'sphere-sgf'),
 			'id'      => 'protocol_relative',

@@ -6,7 +6,7 @@
  *
  * Plugin Name:       Self-Hosted Google Fonts - Forked by Guido De Gobbis
  * Description:       Automatically self-host your Google Fonts - works with any theme or plugin.
- * Version:           2.0.4
+ * Version:           2.0.4-1
  * Author:            Guido De Gobbis
  * Author URI:        https://github.com/degobbis/selfhost-google-fonts/releases
  * License:           GPL-2.0+
@@ -51,24 +51,23 @@ require_once plugin_dir_path(__FILE__) . 'bootstrap.php';
 /**
  * Register activation and deactivation hooks
  */
-global $sgf_is_done;
-$sgf_is_done = false;
-
 if (!function_exists('sgf_activation_hook'))
 {
 	function sgf_activation_hook()
 	{
-		global $sgf_is_done;
+		global $wp_filesystem;
+
+		if (empty($wp_filesystem))
+		{
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
 
 		$sgf_options = unserialize('a:5:{s:7:"enabled";s:1:"1";s:16:"process_enqueues";s:2:"on";s:17:"process_css_files";s:2:"on";s:18:"process_css_inline";s:2:"on";s:13:"relative_path";s:2:"on";}');
 
 		if (is_multisite())
 		{
-			if (empty($sgf_is_done))
-			{
-				$sgf_is_done = true;
-				activate_plugins(plugin_basename(__FILE__), '', true);
-			}
+			activate_plugins(plugin_basename(__FILE__), '', true, true);
 
 			$blogIds = get_sites(array('fields' => 'ids'));
 
@@ -83,6 +82,8 @@ if (!function_exists('sgf_activation_hook'))
 
 				restore_current_blog();
 			}
+
+			switch_to_blog(1);
 
 			return;
 		}
@@ -99,9 +100,19 @@ if (!function_exists('sgf_activation_hook'))
 }
 register_activation_hook(__FILE__, 'sgf_activation_hook');
 
-register_deactivation_hook(__FILE__, function () {
-	return;
-});
+if (!function_exists('sgf_deactivation_hook'))
+{
+	function sgf_deactivation_hook() {
+		if (is_multisite())
+		{
+			deactivate_plugins(plugin_basename(__FILE__), true, true);
+			switch_to_blog(1);
+		}
+
+		return;
+	}
+}
+register_deactivation_hook(__FILE__, 'sgf_deactivation_hook');
 
 /**
  * Register uninstall hooks.
@@ -111,6 +122,12 @@ if (!function_exists('sgf_uninstall'))
 	function sgf_uninstall()
 	{
 		global $wp_filesystem;
+
+		if (empty($wp_filesystem))
+		{
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
 
 		if ($wp_filesystem->is_dir(SGF_UPLOAD['basedir'] . '/sgf-css/'))
 		{
