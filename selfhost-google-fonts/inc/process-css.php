@@ -164,17 +164,18 @@ class ProcessCss {
 		$changed = false;
 
 		// Check for Google Font imports - benchmarked regex
-		preg_match_all('#@import\s+url\( ([\"\']?|\s+) ([^"\'\s]*) (?:\\1|\s+) \)[^;]*;#six', $content, $imports);
+//		preg_match_all('#@import\s+url\( ([\"\']?|\s+) ([^"\'\s]*) (?:\\1|\s+) \)[^;]*;#six', $content, $imports);
+		preg_match_all('#(@import\s?(url\()?(["\'])?(?<url>.*)(?(3)\\3|)(?(2)\)|);)(?|(1)\\1|)#m', $content, $imports, PREG_SET_ORDER);
 
-		foreach ($imports[2] as $key => $import) {
+		foreach ($imports as $import) {
 
-			if (stripos($import, 'fonts.googleapis.com/css') === false) {
+			if (stripos($import['url'], 'fonts.googleapis.com/css') === false) {
 				continue;
 			}
 
 			// Get google fonts CSS - from cache or otherwise
 			$css = Plugin::process()->get_processed(
-				$import, 
+				$import['url'],
 				array(Plugin::process(), 'process_fonts_url'), 
 				'css'
 			);
@@ -182,7 +183,7 @@ class ProcessCss {
 			if (!empty($css)) {
 
 				$content = str_replace(
-					$imports[0][$key], 
+					$import[0],
 					$css, 
 					$content
 				);
