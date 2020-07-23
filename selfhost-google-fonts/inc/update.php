@@ -182,14 +182,54 @@ function sgf_push_update($transient)
 	return $transient;
 }
 
-add_action('upgrader_process_complete', 'sgf_after_update', 10, 4);
+add_action('upgrader_post_install', 'sgf_post_update', 10, 3);
 
-function sgf_after_update($upgrader_object, $options, $var3 = null, $var4 = null)
+function sgf_post_update($response, $hook_extra, $result )
+{
+	global $wp_filesystem;
+
+	if (empty($wp_filesystem))
+	{
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		WP_Filesystem();
+	}
+
+	if ($wp_filesystem->is_dir(SGF_UPLOAD['basedir'] . '/sgf-css/'))
+	{
+		$wp_filesystem->rmdir(SGF_UPLOAD['basedir'] . '/sgf-css/', true);
+	}
+
+	if (is_multisite())
+	{
+		delete_site_transient('sgf_update');
+		$blogIds = get_sites(array('fields' => 'ids'));
+
+		foreach ($blogIds as $blogId)
+		{
+			switch_to_blog($blogId);
+
+			delete_transient('sgf_processed_cache');
+			delete_transient('sgf_preload_cache');
+
+			restore_current_blog();
+		}
+
+		switch_to_blog(1);
+
+		return;
+	}
+
+	delete_transient('sgf_processed_cache');
+	delete_transient('sgf_preload_cache');
+}
+
+add_action('upgrader_process_complete', 'sgf_after_update', 10, 2);
+
+function sgf_after_update($upgrader_object, $options)
 {
 	if ($options['action'] == 'update' && $options['type'] === 'plugin')
 	{
-		// just clean the cache when new plugin version is installed
-		if ( is_multisite() )
+		if (is_multisite())
 		{
 			delete_site_transient('sgf_update');
 
