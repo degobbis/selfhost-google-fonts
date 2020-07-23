@@ -338,17 +338,44 @@ class Process
 	 */
 	public function parse_fonts_query($query)
 	{
+		$parsed = array();
+
 		if (!is_array($query))
 		{
-			parse_str($query, $parsed);
+			$_parsed = explode('&', $query);
+			foreach ($_parsed as $var)
+			{
+				list($key, $value) = explode('=', $var);
+
+				$key = trim($key);
+				$value = trim($value);
+
+				if ($key == 'family')
+				{
+					if (false === strpos($value, '|'))
+					{
+						$parsed[$key][] = $value;
+
+					continue;
+					}
+
+					$value = explode('|', $value);
+
+					$parsed[$key] = array_merge($parsed[$key], $value);
+
+					continue;
+				}
+
+				$parsed[$key] = $value;
+			}
 		}
 		else
 		{
 			$parsed = $query;
 		}
 
-		$parsed   = array_map('trim', $parsed);
-		$families = explode('|', $parsed['family']);
+		// $parsed   = array_map('trim', $parsed);
+		$families = $parsed['family'];
 		$subsets  = array();
 
 		if (!empty($parsed['subset']))
@@ -370,7 +397,8 @@ class Process
 			}
 			else
 			{
-				$variants = explode(',', $font_query[1]);
+				$variants = str_replace(array('wght@', ';'), array('', ','),  $font_query[1]);
+				$variants = explode(',', $variants);
 			}
 
 			$families[$k] = array(
