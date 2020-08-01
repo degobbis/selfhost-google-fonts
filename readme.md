@@ -6,6 +6,11 @@ Original von @asadkn siehe https://github.com/asadkn/selfhost-google-fonts
 
 - Google Fonts Liste aktualisiert
 
+- Google bietet auch zwei Varianten an, die mir derzeit bekannt sind, um die Schriften abzurufen:
+  - https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700|PT+Sans:400,400i,700,700i
+  - https://fonts.googleapis.com/css2?family=PT+Sans+Caption:wght@400;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700  
+Beide werden gefunden und ersetzt.
+
 - Bei Aktivierung des Plugins wird es automatisch auch in den Einstellungen aktiviert.
 Alle Process-Einstellungen sind standardmäßig aktiviert.
 
