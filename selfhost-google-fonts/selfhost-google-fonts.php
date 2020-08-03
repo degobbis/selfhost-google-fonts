@@ -69,7 +69,13 @@ if (!function_exists('sgf_activation_hook'))
 		{
 			activate_plugins(plugin_basename(__FILE__), '', true, true);
 
-			$blogIds = get_sites(array('fields' => 'ids'));
+			$args = array(
+				'fields' => 'ids',
+				'limit' => null,
+				'number' => 0
+			);
+
+			$blogIds = get_sites($args);
 
 			foreach ($blogIds as $blogId)
 			{
