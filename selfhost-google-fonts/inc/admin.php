@@ -110,6 +110,12 @@ class Admin
 	{
 		global $wp_filesystem;
 
+		if (empty($wp_filesystem))
+		{
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
 		$sgfPreloadFiles   = $this->getFileNames((array) get_transient(Process::PRELOAD_CACHE));
 		$sgfProcessedFiles = $this->getFileNames((array) get_transient(Process::PROCESSED_CACHE));
 
@@ -203,6 +209,12 @@ class Admin
 	protected function deleteFilesFromCache($files)
 	{
 		global $wp_filesystem;
+
+		if (empty($wp_filesystem))
+		{
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
 
 		foreach ($files as $file)
 		{
