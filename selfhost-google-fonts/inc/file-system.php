@@ -27,15 +27,7 @@ class FileSystem {
 
 			require_once wp_normalize_path(ABSPATH . '/wp-admin/includes/file.php');
 
-			// At shutdown is usually a ob_start callback which doesn't permit calling ob_*
-			if (did_action('shutdown') && ob_get_level() > 0) {
-				$creds = request_filesystem_credentials('');
-			}
-			else {
-				ob_start();
-				$creds = request_filesystem_credentials('');
-				ob_end_clean();
-			}
+			$creds = request_filesystem_credentials('');
 
 			if (!$creds) {
 				$creds = arrays();
